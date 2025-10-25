@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "users")
 public class User {
 
     @Id
@@ -28,7 +29,4 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ChatSession> chatSessions;
 }

@@ -18,19 +18,18 @@ public class ChatSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long chatSessionId;
+    private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private long userId;
 
     private String sessionName;
 
     private LocalDateTime createdOn;
 
-    private String isFavorite;
+    private boolean isFavorite;
 
-    @OneToMany(mappedBy = "chatSession", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ChatMessage> chatMessages;
-
+    @PrePersist
+    public void prePersist() {
+        createdOn = LocalDateTime.now();
+    }
 }
