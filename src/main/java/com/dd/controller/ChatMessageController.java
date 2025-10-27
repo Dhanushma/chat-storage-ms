@@ -1,6 +1,7 @@
 package com.dd.controller;
 
 import com.dd.dto.ChatMessageRequest;
+import com.dd.dto.ChatMessageResponse;
 import com.dd.entity.ChatMessage;
 import com.dd.service.ChatMessageService;
 import jakarta.validation.Valid;
@@ -22,9 +23,9 @@ public class ChatMessageController {
     }
 
     @PostMapping
-    public ResponseEntity<ChatMessage> saveMessage(@RequestBody @Valid ChatMessageRequest chatMessageRequest) {
-        ChatMessage chatMessage = chatMessageService.saveChatMessage(chatMessageRequest.getSessionId(), chatMessageRequest.getMessageContent(), chatMessageRequest.getMessageSender());
-        return ResponseEntity.status(HttpStatus.CREATED).body(chatMessage);
+    public ResponseEntity<ChatMessageResponse> processAndSaveMessage(@RequestBody @Valid ChatMessageRequest chatMessageRequest) {
+        ChatMessageResponse chatMessageResponse = chatMessageService.processAndSaveMessage(chatMessageRequest.getSessionId(), chatMessageRequest.getMessageContent());
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatMessageResponse);
     }
 
     @GetMapping

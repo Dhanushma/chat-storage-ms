@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException exeption, WebRequest request) {
-        List<String> errors = exeption.getBindingResult()
+    public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException exception, WebRequest request) {
+        List<String> errors = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
@@ -48,6 +48,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timeStamp(LocalDateTime.now())
                 .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
 }

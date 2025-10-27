@@ -21,3 +21,7 @@ server:
 
 application:
   api-key: ${API_KEY}
+
+openai:
+  url: ${OPENAI_URL}
+  apikey: ${OPENAI_API_KEY}

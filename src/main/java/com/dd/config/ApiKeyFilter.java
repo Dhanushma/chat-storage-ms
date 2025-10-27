@@ -24,8 +24,6 @@ public class ApiKeyFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestApiKey = request.getHeader(API_KEY_HEADER);
-        System.out.println(requestApiKey);
-        System.out.println(apiKey);
 
         if (apiKey.equals(requestApiKey)) {
             filterChain.doFilter(request, response);

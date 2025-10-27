@@ -26,4 +26,9 @@ public class ChatMessage {
     private LocalDateTime createdOn;
 
     private long sessionId;
+
+    @PrePersist
+    public void prePersist() {
+        createdOn = LocalDateTime.now();
+    }
 }
