@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +45,8 @@ public class ChatMessageService {
             context.add(Map.of("role", m.getMessageSender(), "content", m.getMessageContent()));
         }
 
-        String aiResponse = "hello from chatgpt"; // TODO: remove this line once openAI service is integrated
-        //String aiResponse = openAIService.getChatResponse(messageContent, context);
+        //String aiResponse = "hello from chatgpt"; // TODO: remove this line once openAI service is integrated
+        String aiResponse = openAIService.getChatResponse(messageContent, context);
 
         // save prompt and response
         chatMessageRepository.save(ChatMessage.builder()

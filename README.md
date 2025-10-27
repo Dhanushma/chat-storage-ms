@@ -17,7 +17,7 @@ Chat Storage MS is a Spring Boot microservice to store chat sessions and message
 - Docker
 - OpenAI API Key (if integrating with OpenAI models)
 
-## Environment Variables
+## Environment Variables in .env File
 - `DB_HOST_NAME`: JDBC HOST for MySQL database (e.g., `jdbc:mysql://localhost:3306/chatdb`)
 - `DB_PORT`: JDBC PORT for MySQL database (e.g., `3306`)
 - `DB_NAME`: Name of the MySQL database (e.g., `chatdb`)
@@ -25,14 +25,21 @@ Chat Storage MS is a Spring Boot microservice to store chat sessions and message
 - `DB_PASSWORD`: MySQL database password
 - `OPENAI_URL`: OpenAI API URL (e.g., `https://api.openai.com/v1/`)
 - `OPENAI_API_KEY`: OpenAI API Key for authentication
-
-
-
-
+- `API_KEY`: API Key for securing endpoints
 
 ## Getting Started
 ### Clone the Repository
 git clone https://github.com/Dhanushma/chat-storage-ms.git 
+### Build the application :
 cd chat-storage-ms
+mvn clean install
+### Run the application locally :
+java -jar target/chat-storage-ms-0.0.1-SNAPSHOT.jar
+### Dockerize the application :
+docker build -t <your-username>/chat-storage-ms:latest .
+OR
+### Run the Docker container :
+docker pull <your-username>/chat-storage-ms:latest 
+docker run --env-file .env -p 8080:8080 kddhan/chat-storage-ms:latest
 
 
