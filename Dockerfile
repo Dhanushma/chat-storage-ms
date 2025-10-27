@@ -1,10 +1,9 @@
-#Start with a base image containing Java runtime
 FROM eclipse-temurin:21-jdk-jammy
+
+WORKDIR /app
 
 EXPOSE 8080
 
-# Add the application's jar to the image
 COPY target/chat-storage-ms-0.0.1-SNAPSHOT.jar chat-storage-ms-0.0.1-SNAPSHOT.jar
 
-# execute the application
 ENTRYPOINT ["java", "-jar", "chat-storage-ms-0.0.1-SNAPSHOT.jar"]
