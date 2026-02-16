@@ -2,6 +2,71 @@ Chat Storage Microservice (chat-storage-ms)
 
 Chat Storage MS is a Spring Boot microservice to store chat sessions and messages for a RAG-based chatbot system. This microservice uses MySQL as the database and can be containerized using Docker for production-ready deployments.
 
+## Architecture Diagram
+
+```
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                              External Clients                                   │
+│                    (Mobile App, Web App, Other Services)                        │
+│                              Port: 8080                                         │
+└────────────────────────────────────┬───────────────────────────────────────────┘
+                                     │ HTTPS/REST
+                                     ▼
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                    chat-storage-ms (Spring Boot)                               │
+│  ┌──────────────────────────────────────────────────────────────────────────┐  │
+│  │ Controllers        Services           Entities          Config           │  │
+│  │ - ChatMessage    - ChatMessage      - ChatMessage    - OpenAI Client    │  │
+│  │ - ChatSession    - ChatSession      - ChatSession    - API Key Filter   │  │
+│  │                  - OpenAI Service   - User           - MySQL Config     │  │
+│  └──────────────────────────────────────────────────────────────────────────┘  │
+│                                     │                                          │
+│    ┌────────────────────────────────┼────────────────────────────────────┐   │
+│    │                                ▼                                    │   │
+│    │                     writes logs to /app/logs                        │   │
+│    │                                │                                    │   │
+│    │                                ▼ (Docker Volume: app-logs)        │   │
+│    │                    ┌────────────────────────┐                       │   │
+│    │                    │   Shared Log Volume    │                       │   │
+│    │                    │   (app-logs)           │                       │   │
+│    │                    └───────────┬────────────┘                       │   │
+│    └────────────────────────────────┼────────────────────────────────────┘   │
+└────────────────────────────────────┼───────────────────────────────────────────┘
+                                     │
+         ┌───────────────────────────┬┴───────────────────────────┐
+         │                           │                           │
+         ▼                           │                           ▼
+┌─────────────────────┐              │              ┌─────────────────────────┐
+│       MySQL         │              │              │       OpenAI API        │
+│   (chat_db)         │              │              │   (GPT Models)          │
+│   Port: 3306        │              │              │   https://api.openai.com│
+│                     │              │              └─────────────────────────┘
+└─────────────────────┘              │
+                                     │ reads from volume
+                                     ▼
+                         ┌─────────────────────┐
+                         │      Logstash      │
+                         │  (Log Processor)   │
+                         │    Port: 5044      │
+                         └──────────┬──────────┘
+                                    │
+                                    │ writes indexed logs
+                                    ▼
+                         ┌─────────────────────┐
+                         │   Elasticsearch     │
+                         │  (Index/Store)     │
+                         │    Port: 9200       │
+                         └──────────┬──────────┘
+                                    │
+                                    │ reads data
+                                    ▼
+                         ┌─────────────────────┐
+                         │      Kibana         │
+                         │  (Visualize Logs)  │
+                         │    Port: 5601       │
+                         └─────────────────────┘
+```
+
 ## Features 
 - Store chat sessions and messages in a MySQL database
 - Compatible with OpenAI GPT models (3.5 or 4 variants).
