@@ -33,11 +33,10 @@ public class ChatMessageService {
     }
 
     public ChatMessageResponse processAndSaveMessage(long sessionId, String messageContent) {
-        log.info("call chatgpt service to fetch AI response for message : {}", messageContent);
-        ChatSession chatSession = chatSessionService.getSessionById(sessionId).orElseThrow(() -> new ResourceNotFoundException("Chat session not found"));
+        log.info("Processing message for session: {}", sessionId);
+        ChatSession chatSession = chatSessionService.getSessionById(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chat session not found"));
 
-        // call chatgpt service to fetch AI response with context, message content/prompt
-        // fetching latest messages in the session as context
         List<ChatMessage> latestMessages = chatMessageRepository.findTop10BySessionIdOrderByCreatedOnDesc(sessionId);
         List<Map<String, String>> context = new ArrayList<>();
 
@@ -45,10 +44,8 @@ public class ChatMessageService {
             context.add(Map.of("role", m.getMessageSender(), "content", m.getMessageContent()));
         }
 
-        //String aiResponse = "hello from chatgpt"; // TODO: remove this line once openAI service is integrated
         String aiResponse = openAIService.getChatResponse(messageContent, context);
 
-        // save prompt and response
         chatMessageRepository.save(ChatMessage.builder()
                 .sessionId(chatSession.getId())
                 .messageContent(messageContent)
@@ -57,7 +54,7 @@ public class ChatMessageService {
         chatMessageRepository.save(ChatMessage.builder()
                 .sessionId(chatSession.getId())
                 .messageContent(aiResponse)
-                .messageSender("chat-assistant")
+                .messageSender("assistant")
                 .build());
 
         return ChatMessageResponse.builder()
@@ -67,9 +64,14 @@ public class ChatMessageService {
                 .build();
     }
 
-    public Page<ChatMessage> getMessagesBySessionId(long sessionId, Pageable pageable) {
-        log.info("Fetching chat messages for a session : {}", sessionId);
-        return chatMessageRepository.findBySessionIdOrderByCreatedOnAsc(sessionId, pageable);
+    public Page<ChatMessageResponse> getMessagesBySessionId(long sessionId, Pageable pageable) {
+        log.info("Fetching chat messages for session: {}", sessionId);
+        return chatMessageRepository.findBySessionIdOrderByCreatedOnAsc(sessionId, pageable)
+                .map(msg -> ChatMessageResponse.builder()
+                        .messageContent(msg.getMessageContent())
+                        .sessionId(msg.getSessionId())
+                        .messageSender(msg.getMessageSender())
+                        .createdOn(msg.getCreatedOn())
+                        .build());
     }
-
 }

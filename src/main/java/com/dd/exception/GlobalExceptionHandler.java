@@ -41,6 +41,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(OpenAIServiceException.class)
+    public ResponseEntity<ErrorMessage> handleOpenAIServiceException(OpenAIServiceException exception) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .errorMessage(exception.getMessage())
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .timeStamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorMessage);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleGeneralException(Exception exception) {
         ErrorMessage errorMessage = ErrorMessage.builder()

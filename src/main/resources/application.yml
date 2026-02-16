@@ -11,12 +11,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
+    show-sql: false
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-    validate-on-migrate: false
+    validate-on-migrate: true
+    connectRetries: 10
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:default}
 server:
   port: 8080
 
@@ -26,3 +29,14 @@ application:
 openai:
   url: ${OPENAI_URL}
   apikey: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-3.5-turbo}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH:/app/logs}
+    name: /app/logs/application.log

@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 public class ChatSessionRequest {
 
     @NotNull(message = "User id can not be blank")
-    private long userId;
+    private Long userId;
+
     @NotBlank(message = "Session name can not be blank")
     private String sessionName;
+
     private boolean isFavorite;
-    private long chatSessionId;
 }

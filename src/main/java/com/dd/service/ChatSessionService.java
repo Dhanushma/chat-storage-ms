@@ -4,10 +4,8 @@ import com.dd.entity.ChatSession;
 import com.dd.repository.ChatMessageRepository;
 import com.dd.repository.ChatSessionRepository;
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,16 +13,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Data
 @Transactional
 public class ChatSessionService {
 
- private ChatSessionRepository chatSessionRepository;
- private ChatMessageRepository chatMessageRepository;
+    private final ChatSessionRepository chatSessionRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
- private static final Logger log = LoggerFactory.getLogger(ChatSessionService.class);
+    private static final Logger log = LoggerFactory.getLogger(ChatSessionService.class);
 
-    @Autowired
     public ChatSessionService(ChatSessionRepository chatSessionRepository, ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatSessionRepository = chatSessionRepository;
@@ -32,7 +28,6 @@ public class ChatSessionService {
 
     public ChatSession createChatSession(Long userId, String sessionName) {
         log.info("Create chat session for user : {}, sessionName={}", userId, sessionName);
-        // check user existence can be added here
         ChatSession chatSession = ChatSession.builder()
                 .userId(userId)
                 .sessionName(sessionName)
@@ -42,7 +37,7 @@ public class ChatSessionService {
     }
 
     public ChatSession updateChatSession(ChatSession chatSession) {
-        log.info("Updating chat session {}", chatSession);
+        log.info("Updating chat session {}", chatSession.getId());
         return chatSessionRepository.save(chatSession);
     }
 
@@ -58,7 +53,7 @@ public class ChatSessionService {
     }
 
     public Page<ChatSession> getUserChatSessions(Long userId, Pageable pageable) {
-        log.info("Fetching paginated chat sessions for user : {}");
+        log.info("Fetching paginated chat sessions for user : {}", userId);
         return chatSessionRepository.findByUserId(userId, pageable);
     }
 }

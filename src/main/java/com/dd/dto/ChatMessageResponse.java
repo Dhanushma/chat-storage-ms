@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,5 +15,7 @@ public class ChatMessageResponse {
 
     private String chatgptResponse;
     private String messageContent;
-     private long sessionId;
+    private long sessionId;
+    private String messageSender;
+    private LocalDateTime createdOn;
 }
